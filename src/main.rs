@@ -3,9 +3,7 @@ use jack;
 use std::f32::consts::TAU;
 use std::io::stdin;
 
-fn main() {
-    println!("StompBox is starting. Make sure to establish the right Jack connections (e.g using qjackctl).");
-
+fn run_processing_loop() {
     let (client, _status) =
         jack::Client::new("StompBox", jack::ClientOptions::NO_START_SERVER).unwrap();
 
@@ -25,6 +23,19 @@ fn main() {
 
     // let mut random_source = random::default(42);
 
+    let angular_frequency = warble_frequency_hz * TAU / sample_rate as f32;
+
+    let mut audio_processor = move |input_sample: &f32| -> f32 {
+        let level_change_factor = (time as f32 * angular_frequency).sin();
+
+        time += 1;
+
+        *input_sample * level_change_factor
+
+        // Generate some white noise for testing
+        // random_source.read::<f32>()
+    };
+
     let handler = jack::contrib::ClosureProcessHandler::new(
         move |client: &jack::Client, process_scope: &jack::ProcessScope| -> jack::Control {
             if sample_rate != client.sample_rate() {
@@ -32,22 +43,15 @@ fn main() {
                 println!("Sample rate changed to {sample_rate}");
             }
 
-            let angular_frequency = warble_frequency_hz * TAU / sample_rate as f32;
-
             let input_buffer = input_port.as_slice(process_scope);
             let output_buffer = output_port.as_mut_slice(process_scope);
 
             let mut output_index: usize = 0;
 
             for input_sample in input_buffer.iter() {
-                let level_change_factor = (time as f32 * angular_frequency).sin();
 
-                output_buffer[output_index] = *input_sample * level_change_factor;
+                output_buffer[output_index] = audio_processor(input_sample);
 
-                // Generate some white noise for testing
-                // output_buffer[outputIndex] = random_source.read::<f32>();
-
-                time += 1;
                 output_index += 1;
             }
 
@@ -61,4 +65,11 @@ fn main() {
         let mut input_text = String::new();
         stdin().read_line(&mut input_text).expect("error");
     }
+}
+
+fn main() {
+    println!("StompBox is starting. Make sure to establish the right Jack connections (e.g using qjackctl).");
+
+    // TODO parse command line options here
+    run_processing_loop();
 }
