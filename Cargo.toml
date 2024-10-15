@@ -1,0 +1,8 @@
+[package]
+name = "stompbox"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+jack = "0.13.0"
+random = "0.14.0"
