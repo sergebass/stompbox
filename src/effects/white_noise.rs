@@ -1,4 +1,4 @@
-use crate::effects::SampleProcessor;
+use crate::effects::AudioEffect;
 
 pub struct WhiteNoiseGenerator<T>
 where
@@ -17,7 +17,7 @@ where
     }
 }
 
-impl<T> SampleProcessor for WhiteNoiseGenerator<T>
+impl<T> AudioEffect for WhiteNoiseGenerator<T>
 where
     T: random::Source,
 {

@@ -1,8 +1,8 @@
-use crate::effects::SampleProcessor;
+use crate::effects::AudioEffect;
 
-pub struct NoOpPassThroughProcessor {}
+pub struct NoOpEffect {}
 
-impl SampleProcessor for NoOpPassThroughProcessor {
+impl AudioEffect for NoOpEffect {
     fn name(&self) -> &str {
         "No-Op"
     }

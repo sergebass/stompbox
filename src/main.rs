@@ -26,7 +26,7 @@ fn run_processing_loop(effect_name: &str) {
         .register_port("Output", jack::AudioOut::default())
         .unwrap();
 
-    let mut sample_processor = effects::new_sample_processor_by_name(&client, &effect_name);
+    let mut sample_processor = effects::new_audio_effect_by_name(&client, &effect_name);
 
     println!("Configured effect: {}", sample_processor.name());
 

@@ -1,4 +1,4 @@
-use crate::effects::SampleProcessor;
+use crate::effects::AudioEffect;
 use jack;
 use std::f32::consts::TAU;
 
@@ -20,7 +20,7 @@ impl TremoloEffect {
     }
 }
 
-impl SampleProcessor for TremoloEffect {
+impl AudioEffect for TremoloEffect {
     fn name(&self) -> &str {
         "Tremolo/Warble"
     }
