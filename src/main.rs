@@ -32,7 +32,7 @@ fn run_processing_loop(effect: String) {
             let input_buffer: &[f32] = input_port.as_slice(process_scope);
             let output_buffer: &mut [f32] = output_port.as_mut_slice(process_scope);
 
-            let mut output_index = 0usize;
+            let mut output_index: usize = 0;
 
             for input_sample in input_buffer.iter() {
                 output_buffer[output_index] = sample_processor.process_sample(*input_sample);
