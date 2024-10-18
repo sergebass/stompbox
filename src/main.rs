@@ -11,9 +11,12 @@ struct Args {
     effect: String,
 }
 
-fn run_processing_loop(effect: String) {
-    let (client, _status) =
-        jack::Client::new("StompBox", jack::ClientOptions::NO_START_SERVER).unwrap();
+fn run_processing_loop(effect_name: &str) {
+    let (client, _status) = jack::Client::new(
+        &format!("StompBox ({effect_name})"),
+        jack::ClientOptions::NO_START_SERVER,
+    )
+    .unwrap();
 
     let input_port = client
         .register_port("Input", jack::AudioIn::default())
@@ -23,7 +26,7 @@ fn run_processing_loop(effect: String) {
         .register_port("Output", jack::AudioOut::default())
         .unwrap();
 
-    let mut sample_processor = effects::new_sample_processor_by_name(&client, &effect);
+    let mut sample_processor = effects::new_sample_processor_by_name(&client, &effect_name);
 
     println!("Configured effect: {}", sample_processor.name());
 
@@ -59,5 +62,5 @@ fn main() {
 
     println!("StompBox is starting. Make sure to establish the right Jack connections (e.g using qjackctl).");
 
-    run_processing_loop(args.effect);
+    run_processing_loop(&args.effect);
 }
